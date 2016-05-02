@@ -7,7 +7,7 @@
  *
  */
 
-package com.oneapm.es.kafka;
+package com.oneapm.es.kafka.producer;
 
 import java.util.Properties;
 
@@ -22,6 +22,7 @@ import com.oneapm.es.data.TransactionData;
  * ClassName:KafkaProducer <br/>
  * Function: <br/>
  * Date: 2016年4月29日 下午4:00:20 <br/>
+ * 
  * @author xushjie
  * @version
  * @since JDK 1.7
@@ -29,6 +30,13 @@ import com.oneapm.es.data.TransactionData;
  */
 public class KafkaProducer {
     
+    /**
+     * main: <br/>
+     * 
+     * @author xushjie
+     * @param args
+     * @since JDK 1.7
+     */
     public static void main(String[] args) {
         long events = Long.parseLong(args[0]);
         

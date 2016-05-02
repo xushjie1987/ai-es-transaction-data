@@ -7,7 +7,7 @@
  *
  */
 
-package com.oneapm.es.kafka;
+package com.oneapm.es.kafka.producer;
 
 import kafka.producer.Partitioner;
 import kafka.utils.VerifiableProperties;
