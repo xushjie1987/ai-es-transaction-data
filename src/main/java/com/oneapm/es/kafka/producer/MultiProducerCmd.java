@@ -30,7 +30,7 @@ public class MultiProducerCmd extends ProducerCommand {
      */
     @Override
     public void run() {
-        
+        System.out.println("暂未开发");
     }
     
 }

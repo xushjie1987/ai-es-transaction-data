@@ -19,6 +19,7 @@ import kafka.producer.ProducerConfig;
 
 import com.oneapm.es.data.DataGenerator;
 import com.oneapm.es.data.TransactionData;
+import com.oneapm.es.util.TimeUtil;
 
 /**
  * ClassName:SingleProducerCmd <br/>
@@ -60,6 +61,7 @@ public class SingleProducerCmd extends ProducerCommand {
         DataGenerator dg = new DataGenerator();
         //
         int i = 0;
+        long start = System.currentTimeMillis();
         while (count.intValue() < 0 ||
                i++ < Math.abs(count.intValue())) {
             TransactionData td = dg.getTransactionData();
@@ -70,6 +72,13 @@ public class SingleProducerCmd extends ProducerCommand {
         }
         //
         producer.close();
+        //
+        long end = System.currentTimeMillis();
+        System.out.println("共发送[" +
+                           count.intValue() +
+                           "]条Message，耗时：" +
+                           TimeUtil.humanTime(end -
+                                              start));
     }
     
 }
