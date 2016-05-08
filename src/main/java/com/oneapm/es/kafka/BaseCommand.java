@@ -11,6 +11,8 @@ package com.oneapm.es.kafka;
 
 import io.airlift.airline.Option;
 import io.airlift.airline.OptionType;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * ClassName:BaseCommand <br/>
@@ -22,6 +24,8 @@ import io.airlift.airline.OptionType;
  * @since JDK 1.7
  * @see
  */
+@Getter
+@Setter
 public abstract class BaseCommand implements Runnable {
     
     @Option(type = OptionType.GLOBAL,

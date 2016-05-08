@@ -43,41 +43,84 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     private String            topicId;
     
+    private Integer           subs;
+    
+    private Boolean           loop             = false;
+    
     private ProducerEngine    engine;
     
     /**
      * build: <br/>
      * 
      * @author xushjie
-     * @param engine
      * @param bulk
      * @param count
      * @param topicId
+     * @param subs
+     * @param engine
      * @return
      * @since JDK 1.7
      */
-    public static ProducerTask build(ProducerEngine engine,
-                                     Integer bulk,
+    public static ProducerTask build(Integer bulk,
                                      Integer count,
-                                     String topicId) {
+                                     String topicId,
+                                     Integer subs,
+                                     ProducerEngine engine) {
         return new ProducerTask(Math.abs(bulk),
                                 count,
                                 topicId,
+                                Math.abs(subs),
                                 engine);
     }
     
-    public static List<ProducerTask> build(ProducerTask parent, int subs) {
+    /**
+     * build: <br/>
+     * 
+     * @author xushjie
+     * @param parent
+     * @return
+     * @since JDK 1.7
+     */
+    public static List<ProducerTask> build(ProducerTask parent) {
+        //
         List<ProducerTask> tasks = new ArrayList<ProducerTask>();
-        if (parent.getCount().intValue() < 0) {
-            tasks.add(build(parent.engine, parent.bulk, parent.count.intValue() < 0 ? parent.count : parent., parent.topicId));
-            tasks.add(build(parent.engine, parent.bulk, parent.count, parent.topicId));
-        } else {
-            int total = parent.getCount().intValue();
-            while (total > 0) {
-                subs.add
-            }
+        //
+        int total = parent.getCount() -
+                    parent.getBulk() > 0
+                                        ? parent.getCount() -
+                                          parent.getBulk()
+                                        : 0;
+        if (total == 0) {
+            return tasks;
         }
-        return subs;
+        //
+        int subCount = total /
+                       parent.getSubs() == 0
+                                            ? 1
+                                            : total /
+                                              parent.getSubs();
+        //
+        for (int i = 0; i < parent.getSubs(); i++) {
+            ProducerTask subTask = parent.getLoop()
+                                         .booleanValue()
+                                                        ? ProducerTask.build(parent.getBulk(),
+                                                                             parent.getCount(),
+                                                                             parent.getTopicId(),
+                                                                             parent.getSubs(),
+                                                                             ProducerEngine.build())
+                                                        : ProducerTask.build(parent.getBulk(),
+                                                                             (total -= subCount) >= subCount
+                                                                                                            ? subCount
+                                                                                                            : total >= 0
+                                                                                                                        ? subCount +
+                                                                                                                          total
+                                                                                                                        : 0,
+                                                                             parent.getTopicId(),
+                                                                             parent.getSubs(),
+                                                                             ProducerEngine.build());
+            tasks.add(subTask);
+        }
+        return tasks;
     }
     
     /**
@@ -85,19 +128,27 @@ public class ProducerTask extends RecursiveTask<Long> {
      */
     @Override
     protected Long compute() {
-        //
-        if (count.intValue() < 0) {
-            
+        // sub jobs
+        List<ProducerTask> subs = build(this);
+        // fork sub jobs
+        for (ProducerTask s : subs) {
+            if (s.getCount() > 0) {
+                s.fork();
+            }
         }
         // own job
         int total = engine.sendBulk(topicId,
                                     bulk > count
                                                 ? count
                                                 : bulk);
-        // sub jobs
-        
-        //
-        return null;
+        // join sub jobs
+        Long count = (long) total;
+        for (ProducerTask s : subs) {
+            if (s.getCount() > 0) {
+                count += s.join();
+            }
+        }
+        return count;
     }
     
     /**
@@ -106,17 +157,62 @@ public class ProducerTask extends RecursiveTask<Long> {
      * @param bulk
      * @param count
      * @param topicId
+     * @param subs
      * @param engine
      */
-    
     public ProducerTask(Integer bulk,
                         Integer count,
                         String topicId,
+                        Integer subs,
                         ProducerEngine engine) {
         this.bulk = bulk;
         this.count = count;
         this.topicId = topicId;
+        this.subs = subs;
         this.engine = engine;
+    }
+    
+    public static void main(String[] args) {
+        //
+        {
+            int total = 10;
+            int subs = 3;
+            int subCount = total /
+                           subs == 0
+                                    ? 1
+                                    : total /
+                                      subs;
+            List<Integer> vec = new ArrayList<Integer>();
+            for (int i = 0; i < subs; i++) {
+                vec.add((total -= subCount) >= subCount
+                                                       ? subCount
+                                                       : total >= 0
+                                                                   ? subCount +
+                                                                     total
+                                                                   : 0);
+            }
+            System.out.println("no.1");
+        }
+        //
+        {
+            int total = 3;
+            int subs = 5;
+            int subCount = total /
+                           subs == 0
+                                    ? 1
+                                    : total /
+                                      subs;
+            List<Integer> vec = new ArrayList<Integer>();
+            for (int i = 0; i < subs; i++) {
+                vec.add((total -= subCount) >= subCount
+                                                       ? subCount
+                                                       : total >= 0
+                                                                   ? subCount +
+                                                                     total
+                                                                   : 0);
+            }
+            System.out.println("no.2");
+        }
     }
     
 }

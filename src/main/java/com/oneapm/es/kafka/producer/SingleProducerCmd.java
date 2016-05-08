@@ -11,14 +11,7 @@ package com.oneapm.es.kafka.producer;
 
 import io.airlift.airline.Command;
 
-import java.util.Properties;
-
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
-
-import com.oneapm.es.data.DataGenerator;
-import com.oneapm.es.data.TransactionData;
+import com.oneapm.es.kafka.context.ContextFactory;
 import com.oneapm.es.util.TimeUtil;
 
 /**
@@ -35,47 +28,30 @@ import com.oneapm.es.util.TimeUtil;
          description = "单线程Kafka producer客户端")
 public class SingleProducerCmd extends ProducerCommand {
     
+    public ProducerEngine engine = ProducerEngine.build(ContextFactory.getProducerContext(this));
+    
     /**
      * @see java.lang.Runnable#run()
      */
     @Override
     public void run() {
-        Properties props = new Properties();
-        props.put("metadata.broker.list",
-                  brokerList);
-        props.put("key.serializer.class",
-                  keyType);
-        props.put("serializer.class",
-                  valueType);
-        props.put("partitioner.class",
-                  partitionerType);
-        props.put("request.required.acks",
-                  isACK.booleanValue()
-                                      ? "1"
-                                      : "0");
-        //
-        ProducerConfig config = new ProducerConfig(props);
-        //
-        Producer<String, String> producer = new Producer<String, String>(config);
-        //
-        DataGenerator dg = new DataGenerator();
         //
         int i = 0;
+        int total = 0;
         long start = System.currentTimeMillis();
         while (count.intValue() < 0 ||
                i++ < Math.abs(count.intValue())) {
-            TransactionData td = dg.getTransactionData();
-            KeyedMessage<String, String> data = new KeyedMessage<String, String>(topicId,
-                                                                                 String.valueOf(td.getApplicationId()),
-                                                                                 td.toJSON());
-            producer.send(data);
+            //
+            total += engine.sendOne(topicId);
         }
         //
-        producer.close();
+        engine.shutdown();
         //
         long end = System.currentTimeMillis();
-        System.out.println("共发送[" +
+        System.out.println("预计发送[" +
                            count.intValue() +
+                           "]条Message，实际发送[" +
+                           total +
                            "]条Message，耗时：" +
                            TimeUtil.humanTime(end -
                                               start));

@@ -9,16 +9,14 @@
 
 package com.oneapm.es.kafka.producer;
 
-import java.util.Properties;
-
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
 import lombok.Getter;
 import lombok.Setter;
 
 import com.oneapm.es.data.DataGenerator;
 import com.oneapm.es.data.TransactionData;
+import com.oneapm.es.kafka.context.ProducerContext;
 
 /**
  * ClassName:ProducerEngine <br/>
@@ -34,50 +32,45 @@ import com.oneapm.es.data.TransactionData;
 @Getter
 public class ProducerEngine {
     
+    public static ProducerContext    context = null;
+    
     private Producer<String, String> producer;
     
-    private DataGenerator            source;
+    private DataGenerator            source  = new DataGenerator();
     
     /**
      * build: <br/>
      * 
      * @author xushjie
-     * @param brokerList
-     * @param keyType
-     * @param valueType
-     * @param partitionerType
-     * @param isACK
      * @return
      * @since JDK 1.7
      */
-    public static ProducerEngine build(String brokerList,
-                                       String keyType,
-                                       String valueType,
-                                       String partitionerType,
-                                       Boolean isACK) {
+    public static synchronized ProducerEngine build() {
+        //
+        if (context == null) {
+            return null;
+        }
         //
         ProducerEngine engine = new ProducerEngine();
         //
-        Properties props = new Properties();
-        props.put("metadata.broker.list",
-                  brokerList);
-        props.put("key.serializer.class",
-                  keyType);
-        props.put("serializer.class",
-                  valueType);
-        props.put("partitioner.class",
-                  partitionerType);
-        props.put("request.required.acks",
-                  isACK.booleanValue()
-                                      ? "1"
-                                      : "0");
-        //
-        ProducerConfig config = new ProducerConfig(props);
-        //
-        engine.producer = new Producer<String, String>(config);
-        engine.source = new DataGenerator();
+        engine.producer = new Producer<String, String>(context.getConfig());
         //
         return engine;
+    }
+    
+    /**
+     * build: <br/>
+     * 
+     * @author xushjie
+     * @param context
+     * @return
+     * @since JDK 1.7
+     */
+    public static synchronized ProducerEngine build(ProducerContext context) {
+        //
+        ProducerEngine.context = context;
+        //
+        return build();
     }
     
     /**

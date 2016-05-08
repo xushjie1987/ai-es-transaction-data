@@ -10,6 +10,8 @@
 package com.oneapm.es.kafka.producer;
 
 import io.airlift.airline.Option;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.oneapm.es.kafka.BaseCommand;
 
@@ -23,6 +25,8 @@ import com.oneapm.es.kafka.BaseCommand;
  * @since JDK 1.7
  * @see
  */
+@Getter
+@Setter
 public abstract class ProducerCommand extends BaseCommand {
     
     @Option(name = { "-k", "--key" },
