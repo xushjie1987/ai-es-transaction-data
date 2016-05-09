@@ -25,7 +25,6 @@ import com.oneapm.es.util.TimeUtil;
  * ClassName:ForkProducerCmd <br/>
  * Function: <br/>
  * Date: 2016年5月4日 上午12:02:44 <br/>
- * 
  * @author xushjie
  * @version
  * @since JDK 1.7
@@ -70,8 +69,9 @@ public class ForkProducerCmd extends ProducerCommand {
                                                subs,
                                                ProducerEngine.build(ContextFactory.getProducerContext(this)));
         if (count < 0) {
-            task.setLoop(true);
+            task.setLoop();
         }
+        //
         producerTaskPool.execute(task);
         //
         while (!task.isDone()) {
@@ -91,8 +91,7 @@ public class ForkProducerCmd extends ProducerCommand {
                                task.get()
                                    .longValue() +
                                "]条Message，耗时：" +
-                               TimeUtil.humanTime(end -
-                                                  start));
+                               TimeUtil.humanTime(end - start));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

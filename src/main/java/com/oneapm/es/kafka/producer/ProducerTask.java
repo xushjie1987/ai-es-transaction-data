@@ -20,7 +20,6 @@ import lombok.Setter;
  * ClassName:ProducerTask <br/>
  * Function: <br/>
  * Date: 2016年5月4日 下午10:05:19 <br/>
- * 
  * @author xushjie
  * @version
  * @since JDK 1.7
@@ -32,10 +31,11 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     /**
      * serialVersionUID:
-     * 
      * @since JDK 1.7
      */
     private static final long serialVersionUID = -1493143104960663567L;
+    
+    private static Boolean    loop             = false;
     
     private Integer           bulk;
     
@@ -45,13 +45,10 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     private Integer           subs;
     
-    private Boolean           loop             = false;
-    
     private ProducerEngine    engine;
     
     /**
      * build: <br/>
-     * 
      * @author xushjie
      * @param bulk
      * @param count
@@ -75,7 +72,6 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     /**
      * build: <br/>
-     * 
      * @author xushjie
      * @param parent
      * @return
@@ -85,39 +81,35 @@ public class ProducerTask extends RecursiveTask<Long> {
         //
         List<ProducerTask> tasks = new ArrayList<ProducerTask>();
         //
-        int total = parent.getCount() -
-                    parent.getBulk() > 0
-                                        ? parent.getCount() -
-                                          parent.getBulk()
-                                        : 0;
+        int total = parent.getCount() - parent.getBulk() > 0
+                                                            ? parent.getCount() -
+                                                              parent.getBulk()
+                                                            : 0;
         if (total == 0) {
             return tasks;
         }
         //
-        int subCount = total /
-                       parent.getSubs() == 0
-                                            ? 1
-                                            : total /
-                                              parent.getSubs();
+        int subCount = total / parent.getSubs() == 0
+                                                    ? 1
+                                                    : total / parent.getSubs();
         //
         for (int i = 0; i < parent.getSubs(); i++) {
-            ProducerTask subTask = parent.getLoop()
-                                         .booleanValue()
-                                                        ? ProducerTask.build(parent.getBulk(),
-                                                                             parent.getCount(),
-                                                                             parent.getTopicId(),
-                                                                             parent.getSubs(),
-                                                                             ProducerEngine.build())
-                                                        : ProducerTask.build(parent.getBulk(),
-                                                                             (total -= subCount) >= subCount
-                                                                                                            ? subCount
-                                                                                                            : total >= 0
-                                                                                                                        ? subCount +
-                                                                                                                          total
-                                                                                                                        : 0,
-                                                                             parent.getTopicId(),
-                                                                             parent.getSubs(),
-                                                                             ProducerEngine.build());
+            ProducerTask subTask = parent.isLoop()
+                                                  ? ProducerTask.build(parent.getBulk(),
+                                                                       parent.getCount(),
+                                                                       parent.getTopicId(),
+                                                                       parent.getSubs(),
+                                                                       ProducerEngine.build())
+                                                  : ProducerTask.build(parent.getBulk(),
+                                                                       (total -= subCount) >= subCount
+                                                                                                      ? subCount
+                                                                                                      : total >= 0
+                                                                                                                  ? subCount +
+                                                                                                                    total
+                                                                                                                  : 0,
+                                                                       parent.getTopicId(),
+                                                                       parent.getSubs(),
+                                                                       ProducerEngine.build());
             tasks.add(subTask);
         }
         return tasks;
@@ -153,7 +145,6 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     /**
      * Creates a new instance of ProducerTask.
-     * 
      * @param bulk
      * @param count
      * @param topicId
@@ -172,16 +163,33 @@ public class ProducerTask extends RecursiveTask<Long> {
         this.engine = engine;
     }
     
+    /**
+     * isLoop: <br/>
+     * @author xushjie
+     * @return
+     * @since JDK 1.7
+     */
+    public boolean isLoop() {
+        return loop.booleanValue();
+    }
+    
+    /**
+     * setLoop: <br/>
+     * @author xushjie
+     * @since JDK 1.7
+     */
+    public void setLoop() {
+        loop = true;
+    }
+    
     public static void main(String[] args) {
         //
         {
             int total = 10;
             int subs = 3;
-            int subCount = total /
-                           subs == 0
-                                    ? 1
-                                    : total /
-                                      subs;
+            int subCount = total / subs == 0
+                                            ? 1
+                                            : total / subs;
             List<Integer> vec = new ArrayList<Integer>();
             for (int i = 0; i < subs; i++) {
                 vec.add((total -= subCount) >= subCount
@@ -197,11 +205,9 @@ public class ProducerTask extends RecursiveTask<Long> {
         {
             int total = 3;
             int subs = 5;
-            int subCount = total /
-                           subs == 0
-                                    ? 1
-                                    : total /
-                                      subs;
+            int subCount = total / subs == 0
+                                            ? 1
+                                            : total / subs;
             List<Integer> vec = new ArrayList<Integer>();
             for (int i = 0; i < subs; i++) {
                 vec.add((total -= subCount) >= subCount
