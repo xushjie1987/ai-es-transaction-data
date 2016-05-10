@@ -9,7 +9,7 @@
 
 package com.oneapm.es.kafka.consumer;
 
-import io.airlift.airline.Command;
+import com.oneapm.es.kafka.BaseCommand;
 
 /**
  * ClassName:ConsumerCommand <br/>
@@ -21,13 +21,6 @@ import io.airlift.airline.Command;
  * @since JDK 1.7
  * @see
  */
-@Command(name = "consumer",
-         description = "Kafka Consumer Client")
-public class ConsumerCommand implements Runnable {
-    
-    @Override
-    public void run() {
-        System.out.println("功能未开发");
-    }
+public abstract class ConsumerCommand extends BaseCommand {
     
 }

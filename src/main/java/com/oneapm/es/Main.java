@@ -13,7 +13,10 @@ import io.airlift.airline.Cli;
 import io.airlift.airline.Cli.CliBuilder;
 import io.airlift.airline.Help;
 
-import com.oneapm.es.kafka.producer.ProducerCommand;
+import com.oneapm.es.kafka.producer.ForkProducerCmd;
+import com.oneapm.es.kafka.producer.MultiProducerCmd;
+import com.oneapm.es.kafka.producer.PooledProducerCmd;
+import com.oneapm.es.kafka.producer.SingleProducerCmd;
 
 /**
  * ClassName:Main <br/>
@@ -38,11 +41,18 @@ public class Main {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         //
-        CliBuilder<Runnable> builder = Cli.<Runnable> builder("kafka")
+        CliBuilder<Runnable> builder = Cli.<Runnable> builder("kfk_cli")
                                           .withDescription("Kafka producer客户端")
                                           .withDefaultCommand(Help.class)
                                           .withCommands(Help.class,
-                                                        ProducerCommand.class);
+                                                        SingleProducerCmd.class);
+        //
+        builder.withGroup("mode")
+               .withDescription("Kafka producer多线程模式")
+               .withDefaultCommand(MultiProducerCmd.class)
+               .withCommands(MultiProducerCmd.class,
+                             PooledProducerCmd.class,
+                             ForkProducerCmd.class);
         //
         Cli<Runnable> gitParser = builder.build();
         //
