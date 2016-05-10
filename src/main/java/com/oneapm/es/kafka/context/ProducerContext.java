@@ -10,6 +10,7 @@
 package com.oneapm.es.kafka.context;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.LongAdder;
 
 import kafka.producer.ProducerConfig;
 import lombok.Getter;
@@ -32,6 +33,8 @@ import com.oneapm.es.kafka.producer.ProducerCommand;
 public class ProducerContext {
     
     private ProducerConfig config;
+    
+    private LongAdder      sumCount = new LongAdder();
     
     /**
      * build: <br/>
@@ -62,6 +65,35 @@ public class ProducerContext {
         context.config = new ProducerConfig(props);
         //
         return context;
+    }
+    
+    /**
+     * plusPlus: <br/>
+     * @author xushjie
+     * @since JDK 1.7
+     */
+    public void plusPlus() {
+        sumCount.increment();
+    }
+    
+    /**
+     * plusBulk: <br/>
+     * @author xushjie
+     * @param bulk
+     * @since JDK 1.7
+     */
+    public void plusBulk(long bulk) {
+        sumCount.add(bulk);
+    }
+    
+    /**
+     * sumAll: <br/>
+     * @author xushjie
+     * @return
+     * @since JDK 1.7
+     */
+    public long sumAll() {
+        return sumCount.sum();
     }
     
 }

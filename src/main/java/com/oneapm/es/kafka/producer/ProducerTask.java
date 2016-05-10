@@ -39,7 +39,7 @@ public class ProducerTask extends RecursiveTask<Long> {
     
     private Integer           bulk;
     
-    private Integer           count;
+    private Long              count;
     
     private String            topicId;
     
@@ -62,7 +62,7 @@ public class ProducerTask extends RecursiveTask<Long> {
      * @since JDK 1.7
      */
     public static ProducerTask build(Integer bulk,
-                                     Integer count,
+                                     Long count,
                                      String topicId,
                                      Integer subs,
                                      ProducerEngine engine) {
@@ -85,20 +85,20 @@ public class ProducerTask extends RecursiveTask<Long> {
         //
         List<ProducerTask> tasks = new ArrayList<ProducerTask>();
         //
-        int total = parent.getCount() -
-                    parent.getBulk() > 0
-                                        ? parent.getCount() -
-                                          parent.getBulk()
-                                        : 0;
+        long total = parent.getCount() -
+                     parent.getBulk() > 0L
+                                          ? parent.getCount() -
+                                            parent.getBulk()
+                                          : 0L;
         if (total == 0) {
             return tasks;
         }
         //
-        int subCount = total /
-                       parent.getSubs() == 0
-                                            ? 1
-                                            : total /
-                                              parent.getSubs();
+        long subCount = total /
+                        parent.getSubs() == 0L
+                                              ? 1L
+                                              : total /
+                                                parent.getSubs();
         //
         for (int i = 0; i < parent.getSubs(); i++) {
             ProducerTask subTask = parent.getLoop()
@@ -132,19 +132,20 @@ public class ProducerTask extends RecursiveTask<Long> {
         List<ProducerTask> subs = build(this);
         // fork sub jobs
         for (ProducerTask s : subs) {
-            if (s.getCount() > 0) {
+            if (s.getCount() > 0L) {
                 s.fork();
             }
         }
         // own job
-        int total = engine.sendBulk(topicId,
-                                    bulk > count
-                                                ? count
-                                                : bulk);
+        long total = engine.sendBulk(topicId,
+                                     bulk > count
+                                                 ? count
+                                                 : bulk);
+        engine.plusBulk(total);
         // join sub jobs
-        Long count = (long) total;
+        Long count = total;
         for (ProducerTask s : subs) {
-            if (s.getCount() > 0) {
+            if (s.getCount() > 0L) {
                 count += s.join();
             }
         }
@@ -161,7 +162,7 @@ public class ProducerTask extends RecursiveTask<Long> {
      * @param engine
      */
     public ProducerTask(Integer bulk,
-                        Integer count,
+                        Long count,
                         String topicId,
                         Integer subs,
                         ProducerEngine engine) {

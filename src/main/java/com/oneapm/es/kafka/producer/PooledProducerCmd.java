@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
  * @see
  */
 @Command(name = "pool",
-         description = "线程池Kafka producer客户端")
+         description = "Pooled线程池Kafka producer客户端")
 public class PooledProducerCmd extends ProducerCommand {
     
     @Option(name = { "-f", "--fixed" },

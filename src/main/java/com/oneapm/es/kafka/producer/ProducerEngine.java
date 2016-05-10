@@ -104,13 +104,35 @@ public class ProducerEngine {
      * @return
      * @since JDK 1.7
      */
-    public int sendBulk(String topicId,
-                        Integer bulk) {
-        int total = 0;
-        for (int i = 0; i < bulk.intValue(); i++) {
+    public long sendBulk(String topicId,
+                         Long bulk) {
+        long total = 0;
+        for (long i = 0; i < bulk.longValue(); i++) {
             total += sendOne(topicId);
         }
         return total;
+    }
+    
+    /**
+     * offset: <br/>
+     * @author xushjie
+     * @return
+     * @since JDK 1.7
+     */
+    public static long offset() {
+        return context == null
+                              ? 0L
+                              : context.sumAll();
+    }
+    
+    /**
+     * plusBulk: <br/>
+     * @author xushjie
+     * @param bulk
+     * @since JDK 1.7
+     */
+    public void plusBulk(long bulk) {
+        context.plusBulk(bulk);
     }
     
     /**

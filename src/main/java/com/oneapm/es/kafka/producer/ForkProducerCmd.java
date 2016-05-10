@@ -69,13 +69,16 @@ public class ForkProducerCmd extends ProducerCommand {
                                                topicId,
                                                subs,
                                                ProducerEngine.build(ContextFactory.getProducerContext(this)));
-        if (count < 0) {
+        if (count < 0L) {
             task.setLoop(true);
         }
         producerTaskPool.execute(task);
         //
         while (!task.isDone()) {
-            System.out.println(producerTaskPool);
+            System.out.println("[" +
+                               ProducerEngine.offset() +
+                               "]-" +
+                               producerTaskPool);
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -86,7 +89,7 @@ public class ForkProducerCmd extends ProducerCommand {
         long end = System.currentTimeMillis();
         try {
             System.out.println("预计发送[" +
-                               count.intValue() +
+                               count.longValue() +
                                "]条Message，实际发送[" +
                                task.get()
                                    .longValue() +

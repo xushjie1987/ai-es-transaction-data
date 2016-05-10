@@ -31,12 +31,12 @@ public abstract class ProducerCommand extends BaseCommand {
     
     @Option(name = { "-k", "--key" },
             required = false,
-            description = "消息的key的类型，可选项")
+            description = "Producer消息的key的类型，可选项")
     public String  keyType         = "kafka.serializer.StringEncoder";
     
     @Option(name = { "-v", "--value" },
             required = false,
-            description = "消息的value的类型，可选项")
+            description = "Producer消息的value的类型，可选项")
     public String  valueType       = "kafka.serializer.StringEncoder";
     
     @Option(name = { "-p", "--partitioner" },
@@ -46,12 +46,12 @@ public abstract class ProducerCommand extends BaseCommand {
     
     @Option(name = { "-a", "--ack" },
             required = false,
-            description = "是否需要ACK响应，默认不扫描")
+            description = "Producer是否需要ACK响应，可选项，默认需要")
     public Boolean isACK           = true;
     
     @Option(name = { "-c", "--count" },
             required = false,
             description = "Producer发送消息总数（非必须），缺省-1，表示无限制")
-    public Integer count           = -1;
+    public Long    count           = -1L;
     
 }
