@@ -39,18 +39,18 @@ public class ForkProducerCmd extends ProducerCommand {
     
     @Option(name = { "-s", "--subs" },
             required = false,
-            description = "ForkJoin模式fork子任务数，内部参数（非必须），缺省10，不要设置太大或者太小，5-10之间")
-    public Integer       subs             = 10;
+            description = "ForkJoin模式fork子任务数，内部参数（非必须），缺省5，不要设置太大")
+    public Integer       subs             = 5;
     
     @Option(name = { "-u", "--bulk" },
             required = false,
-            description = "ForkJoin模式fork子任务数据批量（非必须），缺省100条Message")
-    public Integer       bulk             = 100;
+            description = "ForkJoin模式fork子任务数据批量（非必须），缺省2000条Message")
+    public Integer       bulk             = 2000;
     
     @Option(name = { "-m", "--parallelism" },
             required = false,
-            description = "Producer发送消息ForkJoin池线程容量（非必须），缺省50")
-    public Integer       parallelism      = 50;
+            description = "Producer发送消息ForkJoin池线程容量（非必须），缺省200")
+    public Integer       parallelism      = 200;
     
     private ForkJoinPool producerTaskPool = null;
     
@@ -70,6 +70,9 @@ public class ForkProducerCmd extends ProducerCommand {
                                                subs,
                                                ProducerEngine.build(ContextFactory.getProducerContext(this)));
         if (count < 0L) {
+            // 如果是无限发送，那么强制subs子任务数为2，否则LIFO会导致线程数暴增，从而OOM异常
+            subs = 2;
+            // 无限循环标识
             task.setLoop(true);
         }
         producerTaskPool.execute(task);
