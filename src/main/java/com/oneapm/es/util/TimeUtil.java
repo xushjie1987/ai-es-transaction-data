@@ -9,7 +9,6 @@
 
 package com.oneapm.es.util;
 
-
 /**
  * ClassName:TimeUtil <br/>
  * Function: <br/>
@@ -57,6 +56,47 @@ public class TimeUtil {
         }
         return String.valueOf(date) +
                "毫秒";
+    }
+    
+    /**
+     * calcDuration: <br/>
+     * @author xushjie
+     * @param duration
+     * @return
+     * @since JDK 1.7
+     */
+    public static Long calcDuration(String duration) {
+        //
+        if (null == duration ||
+            "".equals(duration) ||
+            duration.length() < 2) {
+            return 0L;
+        }
+        //
+        String l = duration.substring(0,
+                                      duration.length());
+        String u = duration.substring(duration.length() - 1);
+        //
+        switch (u) {
+            case "d":
+            case "D":
+                return Long.valueOf(Long.valueOf(l) *
+                                    24 *
+                                    60 *
+                                    60 *
+                                    1000);
+            case "h":
+            case "H":
+                return Long.valueOf(Long.valueOf(l) * 60 * 60 * 1000);
+            case "m":
+            case "M":
+                return Long.valueOf(Long.valueOf(l) * 60 * 1000);
+            case "s":
+            case "S":
+                return Long.valueOf(Long.valueOf(l) * 1000);
+            default:
+                return Long.valueOf(Long.valueOf(l) * 1000);
+        }
     }
     
 }

@@ -54,4 +54,14 @@ public abstract class ProducerCommand extends BaseCommand {
             description = "Producer发送消息总数（非必须），缺省-1，表示无限制")
     public Long    count           = -1L;
     
+    @Option(name = { "-o", "--generator" },
+            required = false,
+            description = "Producer消息生成器类型，可选项，默认RandomDataGenerator类型")
+    public String  generator       = "com.oneapm.es.data.RandomDataGenerator";
+    
+    @Option(name = { "-d", "--duration" },
+            required = false,
+            description = "Producer时间戳时间跨度，默认3d")
+    public String  duration        = "3d";
+    
 }

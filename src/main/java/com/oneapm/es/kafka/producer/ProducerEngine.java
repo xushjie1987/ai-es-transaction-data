@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import com.oneapm.es.data.DataGenerator;
+import com.oneapm.es.data.RandomDataGenerator;
 import com.oneapm.es.data.TransactionData;
 import com.oneapm.es.kafka.context.ProducerContext;
 
@@ -36,7 +37,7 @@ public class ProducerEngine {
     
     private Producer<String, String> producer;
     
-    private DataGenerator            source  = new DataGenerator();
+    private DataGenerator            source;
     
     /**
      * build: <br/>
@@ -54,6 +55,19 @@ public class ProducerEngine {
         ProducerEngine engine = new ProducerEngine();
         //
         engine.producer = new Producer<String, String>(context.getConfig());
+        try {
+            engine.source = context.getDgClazz() == null
+                                                        ? new RandomDataGenerator()
+                                                        : context.getDgClazz()
+                                                                 .newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("实例化" +
+                               context.getDgClazz()
+                                      .getName() +
+                               "类型实例失败!");
+            engine.source = new RandomDataGenerator();
+        }
         //
         return engine;
     }

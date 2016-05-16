@@ -16,6 +16,7 @@ import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
 import com.oneapm.es.data.DataGenerator;
+import com.oneapm.es.data.RandomDataGenerator;
 import com.oneapm.es.data.TransactionData;
 
 /**
@@ -54,7 +55,7 @@ public class KafkaProducer {
         
         Producer<String, String> producer = new Producer<String, String>(config);
         
-        DataGenerator dg = new DataGenerator();
+        DataGenerator dg = new RandomDataGenerator();
         
         for (long nEvents = 0; nEvents < events; nEvents++) {
             TransactionData td = dg.getTransactionData();
