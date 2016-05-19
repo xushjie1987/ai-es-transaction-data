@@ -16,7 +16,10 @@ import kafka.producer.ProducerConfig;
 import lombok.Getter;
 import lombok.Setter;
 
+import com.oneapm.es.data.DataGenerator;
+import com.oneapm.es.data.MetricDataGenerator;
 import com.oneapm.es.kafka.producer.ProducerCommand;
+import com.oneapm.es.util.TimeUtil;
 
 /**
  * ClassName:ProducerContext <br/>
@@ -32,37 +35,59 @@ import com.oneapm.es.kafka.producer.ProducerCommand;
 @Setter
 public class ProducerContext {
     
-    private ProducerConfig config;
+    private ProducerConfig       config;
     
-    private LongAdder      sumCount = new LongAdder();
+    private Class<DataGenerator> dgClazz;
+    
+    private LongAdder            sumCount = new LongAdder();
     
     /**
      * build: <br/>
      * 
      * @author xushjie
-     * @param optioin
+     * @param option
      * @return
      * @since JDK 1.7
      */
-    public static ProducerContext build(ProducerCommand optioin) {
+    @SuppressWarnings("unchecked")
+    public static ProducerContext build(ProducerCommand option) {
         //
         Properties props = new Properties();
         props.put("metadata.broker.list",
-                  optioin.getBrokerList());
+                  option.getBrokerList());
         props.put("key.serializer.class",
-                  optioin.getKeyType());
+                  option.getKeyType());
         props.put("serializer.class",
-                  optioin.getValueType());
+                  option.getValueType());
         props.put("partitioner.class",
-                  optioin.getPartitionerType());
+                  option.getPartitionerType());
         props.put("request.required.acks",
-                  optioin.getIsACK()
-                         .booleanValue()
-                                        ? "1"
-                                        : "0");
+                  option.getIsACK()
+                        .booleanValue()
+                                       ? "1"
+                                       : "0");
         //
         ProducerContext context = new ProducerContext();
         context.config = new ProducerConfig(props);
+        try {
+            context.dgClazz = (Class<DataGenerator>) Class.forName(option.getGenerator(),
+                                                                   true,
+                                                                   Thread.currentThread()
+                                                                         .getContextClassLoader());
+            if (MetricDataGenerator.class.isAssignableFrom(context.dgClazz)) {
+                context.dgClazz.getDeclaredField("duration")
+                               .set(null,
+                                    TimeUtil.calcDuration(option.getDuration()));
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("加载" +
+                               option.getGenerator() +
+                               "数据生成器类失败!");
+            context.dgClazz = null;
+        } catch (Exception e) {
+            // ignore
+        }
         //
         return context;
     }

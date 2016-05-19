@@ -214,6 +214,46 @@ public class ProducerTask extends RecursiveTask<Long> {
             }
             System.out.println("no.2");
         }
+        //
+        {
+            int total = 10000000;
+            int subs = 3;
+            int subCount = total /
+                           subs == 0
+                                    ? 1
+                                    : total /
+                                      subs;
+            List<Integer> vec = new ArrayList<Integer>();
+            for (int i = 0; i < subs; i++) {
+                vec.add((total -= subCount) >= subCount
+                                                       ? subCount
+                                                       : total >= 0
+                                                                   ? subCount +
+                                                                     total
+                                                                   : 0);
+            }
+            System.out.println("no.3");
+        }
+        //
+        {
+            int total = 1000;
+            int subs = 200;
+            int subCount = total /
+                           subs == 0
+                                    ? 1
+                                    : total /
+                                      subs;
+            List<Integer> vec = new ArrayList<Integer>();
+            for (int i = 0; i < subs; i++) {
+                vec.add((total -= subCount) >= subCount
+                                                       ? subCount
+                                                       : total >= 0
+                                                                   ? subCount +
+                                                                     total
+                                                                   : 0);
+            }
+            System.out.println("no.4");
+        }
     }
     
 }
