@@ -9,6 +9,7 @@
 
 package com.oneapm.es.kafka.context;
 
+import java.lang.reflect.Field;
 import java.util.Properties;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -74,10 +75,12 @@ public class ProducerContext {
                                                                    true,
                                                                    Thread.currentThread()
                                                                          .getContextClassLoader());
+            // 对于MetricDataGenerator类型，特殊处理duration字段
             if (MetricDataGenerator.class.isAssignableFrom(context.dgClazz)) {
-                context.dgClazz.getDeclaredField("duration")
-                               .set(null,
-                                    TimeUtil.calcDuration(option.getDuration()));
+                Field f = context.dgClazz.getDeclaredField("duration");
+                f.setAccessible(true);
+                f.set(null,
+                      TimeUtil.calcDuration(option.getDuration()));
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
