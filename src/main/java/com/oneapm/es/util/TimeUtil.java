@@ -74,28 +74,81 @@ public class TimeUtil {
         }
         //
         String l = duration.substring(0,
-                                      duration.length());
+                                      duration.length() - 1);
+        Long base = null;
+        try {
+            base = Long.valueOf(l);
+        } catch (Exception e) {
+            return 0L;
+        }
         String u = duration.substring(duration.length() - 1);
         //
         switch (u) {
+            case "y":
+            case "Y":
+                return Long.valueOf(base *
+                                    12 *
+                                    30 *
+                                    24 *
+                                    60 *
+                                    60 *
+                                    1000);
+            case "M":
+                return Long.valueOf(base *
+                                    30 *
+                                    24 *
+                                    60 *
+                                    60 *
+                                    1000);
+            case "w":
+            case "W":
+                return Long.valueOf(base *
+                                    7 *
+                                    24 *
+                                    60 *
+                                    60 *
+                                    1000);
             case "d":
             case "D":
-                return Long.valueOf(Long.valueOf(l) *
+                return Long.valueOf(base *
                                     24 *
                                     60 *
                                     60 *
                                     1000);
             case "h":
             case "H":
-                return Long.valueOf(Long.valueOf(l) * 60 * 60 * 1000);
+                return Long.valueOf(base * 60 * 60 * 1000);
             case "m":
-            case "M":
-                return Long.valueOf(Long.valueOf(l) * 60 * 1000);
+                return Long.valueOf(base * 60 * 1000);
             case "s":
             case "S":
-                return Long.valueOf(Long.valueOf(l) * 1000);
+                return Long.valueOf(base * 1000);
             default:
-                return Long.valueOf(Long.valueOf(l) * 1000);
+                return Long.valueOf(base * 1000);
+        }
+    }
+    
+    public static void main(String[] args) {
+        {
+            System.out.println(calcDuration("1y"));
+        }
+        {
+            System.out.println(calcDuration("1M"));
+        }
+        {
+            System.out.println(calcDuration("1w"));
+        }
+        {
+            System.out.println(calcDuration("1d"));
+        }
+        {
+            System.out.println(calcDuration("1h"));
+        }
+        {
+            System.out.println(calcDuration("1m"));
+        }
+        {
+            System.out.println(calcDuration("1s"));
         }
     }
     

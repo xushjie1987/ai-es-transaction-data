@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.RandomUtils;
+
 /**
  * ClassName:MetricDataGenerator <br/>
  * Function: <br/>
@@ -133,11 +135,9 @@ public class MetricDataGenerator extends BaseDataGenerator {
         Long timestamp = timestamp();
         data.setTimestamp(duration.longValue() == 0L
                                                     ? timestamp
-                                                    : randomInt(Long.valueOf(timestamp)
-                                                                    .intValue(),
-                                                                Long.valueOf(timestamp +
-                                                                             duration)
-                                                                    .intValue()).longValue());
+                                                    : RandomUtils.nextLong(timestamp,
+                                                                           timestamp +
+                                                                                   duration));
         data.setErrors(randomInt());
         data.setApdex(generateFromRegex("^[A-Z]$"));
         // 0-1024
@@ -187,6 +187,8 @@ public class MetricDataGenerator extends BaseDataGenerator {
         System.out.println("###########");
         System.out.println(new MetricDataGenerator().getTransactionData()
                                                     .toCVS());
+        System.out.println("######带有时区的毫秒UNIX时间戳即系统本地时间戳#####");
+        System.out.println(System.currentTimeMillis());
     }
     
 }
