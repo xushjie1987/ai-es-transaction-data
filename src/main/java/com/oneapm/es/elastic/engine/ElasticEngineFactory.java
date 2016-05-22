@@ -110,9 +110,12 @@ public class ElasticEngineFactory {
                 //
                 BulkRequestBuilder bulkRequest = client.prepareBulk();
                 //
+                long mini = 0L;
+                long count = 0L;
                 for (TransactionData data : datas) {
                     DateTime date = new DateTime(data.getTimestamp(),
                                                  DateTimeZone.UTC);
+                    //
                     bulkRequest.add(client.prepareIndex(specSettings.getIndexPrefix() +
                                                                 "-" +
                                                                 date.year()
@@ -132,21 +135,41 @@ public class ElasticEngineFactory {
                                                                                    "h"
                                                                                  : "")
                                           .setSource(getJsonBuilder(data)));
+                    // 分成若干个微小的bulk，做为底层bulk的API数据量
+                    if (++mini >= (specSettings.getMiniBulk()
+                                               .longValue() > specSettings.getBulk()
+                                                                          .longValue()
+                                                                                      ? specSettings.getBulk()
+                                                                                                    .longValue()
+                                                                                      : specSettings.getMiniBulk()
+                                                                                                    .longValue())) {
+                        // 置0，为了下一次循环
+                        mini = 0L;
+                        // 计数成功个数
+                        BulkResponse resp = bulkRequest.get();
+                        if (resp.hasFailures()) {
+                            for (BulkItemResponse item : resp.getItems()) {
+                                if (!item.isFailed()) {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
                 }
                 //
                 BulkResponse resp = bulkRequest.get();
                 if (resp.hasFailures()) {
-                    long count = 0;
                     for (BulkItemResponse item : resp.getItems()) {
                         if (!item.isFailed()) {
                             count++;
                         }
                     }
-                    return count;
                 }
                 //
-                return Integer.valueOf(datas.size())
-                              .longValue();
+                return count > 0L
+                                 ? count
+                                 : Integer.valueOf(datas.size())
+                                          .longValue();
             }
             
             /**

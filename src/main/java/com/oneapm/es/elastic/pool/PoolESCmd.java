@@ -60,8 +60,13 @@ public class PoolESCmd extends AbstractESCmd {
     
     @Option(name = { "-b", "--bulk" },
             required = false,
-            description = "ES索引文档bulk数据量，默认100")
-    public Long             bulk        = 100L;
+            description = "ES索引文档bulk数据量，不要设置太高，否则fail数量太多，默认200")
+    public Long             bulk        = 200L;
+    
+    @Option(name = { "-m", "--mini" },
+            required = false,
+            description = "ES索引文档bulk接口API数据量，不要设置太高，否则fail数量太多，务必小于bulk，默认50")
+    public Long             miniBulk    = 50L;
     
     @Option(name = { "-c", "--count" },
             required = false,
