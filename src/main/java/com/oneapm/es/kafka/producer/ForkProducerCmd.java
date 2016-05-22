@@ -35,7 +35,7 @@ import com.oneapm.es.util.TimeUtil;
 @Setter
 @Command(name = "fork",
          description = "ForkJoin模式Kafka producer客户端")
-public class ForkProducerCmd extends ProducerCommand {
+public class ForkProducerCmd extends ProducerCmd {
     
     @Option(name = { "-s", "--subs" },
             required = false,

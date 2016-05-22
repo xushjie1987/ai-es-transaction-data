@@ -9,7 +9,7 @@
 
 package com.oneapm.es.kafka.consumer;
 
-import com.oneapm.es.kafka.BaseCommand;
+import com.oneapm.es.kafka.AbstractKfkCmd;
 
 /**
  * ClassName:ConsumerCommand <br/>
@@ -21,6 +21,6 @@ import com.oneapm.es.kafka.BaseCommand;
  * @since JDK 1.7
  * @see
  */
-public abstract class ConsumerCommand extends BaseCommand {
+public abstract class ConsumerCommand extends AbstractKfkCmd {
     
 }

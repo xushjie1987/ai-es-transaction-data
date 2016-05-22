@@ -19,7 +19,7 @@ import lombok.Setter;
 
 import com.oneapm.es.data.DataGenerator;
 import com.oneapm.es.data.MetricDataGenerator;
-import com.oneapm.es.kafka.producer.ProducerCommand;
+import com.oneapm.es.kafka.producer.ProducerCmd;
 import com.oneapm.es.util.TimeUtil;
 
 /**
@@ -51,7 +51,7 @@ public class ProducerContext {
      * @since JDK 1.7
      */
     @SuppressWarnings("unchecked")
-    public static ProducerContext build(ProducerCommand option) {
+    public static ProducerContext build(ProducerCmd option) {
         //
         Properties props = new Properties();
         props.put("metadata.broker.list",

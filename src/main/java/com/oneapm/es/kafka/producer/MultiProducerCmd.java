@@ -23,7 +23,7 @@ import io.airlift.airline.Command;
  */
 @Command(name = "multi",
          description = "Multi多线程Kafka producer客户端")
-public class MultiProducerCmd extends ProducerCommand {
+public class MultiProducerCmd extends ProducerCmd {
     
     /**
      * @see java.lang.Runnable#run()

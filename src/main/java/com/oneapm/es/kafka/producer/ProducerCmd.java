@@ -13,7 +13,7 @@ import io.airlift.airline.Option;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.oneapm.es.kafka.BaseCommand;
+import com.oneapm.es.kafka.AbstractKfkCmd;
 
 /**
  * ClassName:ProducerCommand <br/>
@@ -27,7 +27,7 @@ import com.oneapm.es.kafka.BaseCommand;
  */
 @Getter
 @Setter
-public abstract class ProducerCommand extends BaseCommand {
+public abstract class ProducerCmd extends AbstractKfkCmd {
     
     @Option(name = { "-k", "--key" },
             required = false,
