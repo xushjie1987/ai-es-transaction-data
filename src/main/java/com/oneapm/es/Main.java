@@ -13,6 +13,7 @@ import io.airlift.airline.Cli;
 import io.airlift.airline.Cli.CliBuilder;
 import io.airlift.airline.Help;
 
+import com.oneapm.es.elastic.pool.PoolESCmd;
 import com.oneapm.es.kafka.producer.ForkProducerCmd;
 import com.oneapm.es.kafka.producer.MultiProducerCmd;
 import com.oneapm.es.kafka.producer.PooledProducerCmd;
@@ -41,23 +42,27 @@ public class Main {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         //
-        CliBuilder<Runnable> builder = Cli.<Runnable> builder("kfk_cli")
-                                          .withDescription("Kafka producer客户端")
+        CliBuilder<Runnable> builder = Cli.<Runnable> builder("XCli")
+                                          .withDescription("XCli客户端")
                                           .withDefaultCommand(Help.class)
-                                          .withCommands(Help.class,
-                                                        SingleProducerCmd.class);
-        //
-        builder.withGroup("mode")
-               .withDescription("Kafka producer多线程模式")
+                                          .withCommand(Help.class);
+        // kafka-0.8.0
+        builder.withGroup("kafka")
+               .withDescription("Kafka XCli客户端")
                .withDefaultCommand(MultiProducerCmd.class)
-               .withCommands(MultiProducerCmd.class,
+               .withCommands(SingleProducerCmd.class,
+                             MultiProducerCmd.class,
                              PooledProducerCmd.class,
                              ForkProducerCmd.class);
+        // es-2.1.1
+        builder.withGroup("es")
+               .withDescription("ElasticSearch XCli客户端")
+               .withDefaultCommand(PoolESCmd.class)
+               .withCommands(PoolESCmd.class);
         //
         Cli<Runnable> gitParser = builder.build();
         //
         gitParser.parse(args)
                  .run();
     }
-    
 }

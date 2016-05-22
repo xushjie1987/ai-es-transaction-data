@@ -31,28 +31,35 @@ public class TimeUtil {
      */
     public static String humanTime(long date) {
         if (date /
-            1000 /
-            60 /
-            60 /
-            24 > 0) {
+            1000L /
+            60L /
+            60L /
+            24L > 0L) {
             return String.valueOf(date /
-                                  1000 /
-                                  60 /
-                                  60 /
-                                  24) +
-                   "天";
+                                  1000L /
+                                  60L /
+                                  60L /
+                                  24L) +
+                   "天" +
+                   humanTime(date %
+                             (1000L * 60L * 60L * 24L));
         }
-        if (date / 1000 / 60 / 60 > 0) {
-            return String.valueOf(date / 1000 / 60 / 60) +
-                   "小时";
+        if (date / 1000L / 60L / 60L > 0L) {
+            return String.valueOf(date / 1000L / 60L / 60L) +
+                   "小时" +
+                   humanTime(date %
+                             (1000L * 60L * 60L));
         }
-        if (date / 1000 / 60 > 0) {
-            return String.valueOf(date / 1000 / 60) +
-                   "分钟";
+        if (date / 1000L / 60L > 0L) {
+            return String.valueOf(date / 1000L / 60L) +
+                   "分钟" +
+                   humanTime(date %
+                             (1000L * 60L));
         }
-        if (date / 1000 > 0) {
-            return String.valueOf(date / 1000) +
-                   "秒";
+        if (date / 1000L > 0L) {
+            return String.valueOf(date / 1000L) +
+                   "秒" +
+                   humanTime(date % 1000L);
         }
         return String.valueOf(date) +
                "毫秒";
@@ -60,6 +67,7 @@ public class TimeUtil {
     
     /**
      * calcDuration: <br/>
+     * 
      * @author xushjie
      * @param duration
      * @return

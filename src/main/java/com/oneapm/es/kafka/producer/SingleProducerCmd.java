@@ -26,7 +26,7 @@ import com.oneapm.es.util.TimeUtil;
  */
 @Command(name = "single",
          description = "Single单线程Kafka producer客户端")
-public class SingleProducerCmd extends ProducerCommand {
+public class SingleProducerCmd extends ProducerCmd {
     
     public ProducerEngine engine = ProducerEngine.build(ContextFactory.getProducerContext(this));
     

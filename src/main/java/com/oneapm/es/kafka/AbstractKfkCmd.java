@@ -26,15 +26,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class BaseCommand implements Runnable {
+public abstract class AbstractKfkCmd implements Runnable {
     
-    @Option(type = OptionType.GLOBAL,
+    @Option(type = OptionType.GROUP,
             name = { "-b", "--broker" },
             required = false,
             description = "Broker地址列表，格式：IP:PORT,IP:PORT,IP:PORT，可选项")
     public String brokerList = "10.45.39.199:9092,10.46.177.114:9092,10.45.11.108:9092";
     
-    @Option(type = OptionType.GLOBAL,
+    @Option(type = OptionType.GROUP,
             name = { "-t", "--topic" },
             required = false,
             description = "kafka的tipic的id，可选项")

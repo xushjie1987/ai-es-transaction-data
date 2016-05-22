@@ -17,6 +17,7 @@ import lombok.ToString;
  * ClassName:TransactionData <br/>
  * Function: <br/>
  * Date: 2016年4月29日 下午6:02:58 <br/>
+ * 
  * @author xushjie
  * @version
  * @since JDK 1.7

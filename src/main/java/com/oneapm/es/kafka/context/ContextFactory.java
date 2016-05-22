@@ -10,7 +10,7 @@
 package com.oneapm.es.kafka.context;
 
 import com.oneapm.es.kafka.consumer.ConsumerCommand;
-import com.oneapm.es.kafka.producer.ProducerCommand;
+import com.oneapm.es.kafka.producer.ProducerCmd;
 
 /**
  * ClassName:ContextFactory <br/>
@@ -36,7 +36,7 @@ public abstract class ContextFactory {
      * @return
      * @since JDK 1.7
      */
-    public static synchronized ProducerContext getProducerContext(ProducerCommand option) {
+    public static synchronized ProducerContext getProducerContext(ProducerCmd option) {
         if (producerContext == null) {
             producerContext = ProducerContext.build(option);
         }
