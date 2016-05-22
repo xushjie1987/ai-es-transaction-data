@@ -61,7 +61,7 @@ public abstract class AbstractESCmd implements Runnable {
     @Option(type = OptionType.GROUP,
             name = { "-r", "--routing" },
             required = false,
-            description = "ES索引路由，默认TRUE")
-    public Boolean isRouting   = Boolean.TRUE;
+            description = "ES索引文档过程是否需要使用路由，默认FALSE")
+    public Boolean isRouting   = Boolean.FALSE;
     
 }
