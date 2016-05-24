@@ -13,6 +13,7 @@ import io.airlift.airline.Cli;
 import io.airlift.airline.Cli.CliBuilder;
 import io.airlift.airline.Help;
 
+import com.oneapm.es.data.console.ConsoleDataCmd;
 import com.oneapm.es.elastic.pool.PoolESCmd;
 import com.oneapm.es.kafka.producer.ForkProducerCmd;
 import com.oneapm.es.kafka.producer.MultiProducerCmd;
@@ -46,6 +47,11 @@ public class Main {
                                           .withDescription("XCli客户端")
                                           .withDefaultCommand(Help.class)
                                           .withCommand(Help.class);
+        // data generator
+        builder.withGroup("data")
+               .withDescription("Data Generator XCli客户端")
+               .withDefaultCommand(ConsoleDataCmd.class)
+               .withCommands(ConsoleDataCmd.class);
         // kafka-0.8.0
         builder.withGroup("kafka")
                .withDescription("Kafka XCli客户端")
@@ -55,7 +61,7 @@ public class Main {
                              PooledProducerCmd.class,
                              ForkProducerCmd.class);
         // es-2.1.1
-        builder.withGroup("es")
+        builder.withGroup("elastic")
                .withDescription("ElasticSearch XCli客户端")
                .withDefaultCommand(PoolESCmd.class)
                .withCommands(PoolESCmd.class);
