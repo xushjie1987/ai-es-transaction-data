@@ -154,6 +154,8 @@ public class ElasticEngineFactory {
                                 }
                             }
                         }
+                        // 重新构建bulk请求
+                        bulkRequest = client.prepareBulk();
                     }
                 }
                 //
